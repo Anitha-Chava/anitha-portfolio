@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin, Linkedin, Github } from "lucide-react";
-import emailjs from "@emailjs/browser";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -15,29 +14,29 @@ export default function ContactSection() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  // Handle form submission
+  // Handle form submission (calls Vercel serverless function)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await emailjs.send(
-        "service_lwqslb7",     // ✅ Your EmailJS Service ID
-        "template_2oadth1",    // ✅ Your EmailJS Template ID
-        {
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-        },
-        "qppCCN0JMO27ODxBN"    // ✅ Your EmailJS Public Key
-      );
+      const resp = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-      if (response.status === 200) {
+      const data = await resp.json();
+
+      if (resp.ok) {
         alert("✅ Message sent successfully!");
         setFormData({ name: "", email: "", message: "" });
+      } else {
+        console.error("Server error:", data);
+        alert("❌ Failed to send message. Please try again later.");
       }
     } catch (error) {
-      console.error("Email send failed:", error);
+      console.error("Network error:", error);
       alert("❌ Failed to send message. Please try again later.");
     } finally {
       setLoading(false);
