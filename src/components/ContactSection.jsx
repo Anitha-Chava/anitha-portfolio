@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin, Linkedin, Github } from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -7,6 +8,8 @@ export default function ContactSection() {
     email: "",
     message: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -17,13 +20,31 @@ export default function ContactSection() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Here you can replace this with an actual API call or EmailJS integration
-    console.log("Form submitted:", formData);
-    alert(`Thank you ${formData.name}, your message has been sent!`);
-
-    // Clear form after submission
-    setFormData({ name: "", email: "", message: "" });
+    emailjs
+      .send(
+        "service_lwqslb7",     // Replace with your EmailJS Service ID
+        "template_iwpmzq3",    // Replace with your EmailJS Template ID
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+        "qppCCN0JMO27ODxBN"      // Replace with your Public Key
+      )
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+          alert("Message sent successfully!");
+          setFormData({ name: "", email: "", message: "" });
+        },
+        (error) => {
+          console.error("FAILED...", error);
+          alert("Something went wrong. Please try again.");
+        }
+      )
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -37,10 +58,9 @@ export default function ContactSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Contact Info */}
+          {/* Left side: Contact Info */}
           <div className="space-y-8">
             <h3 className="text-xl font-semibold text-blue-400">Get In Touch</h3>
-
             <div className="space-y-6">
               <div className="flex items-start">
                 <Mail className="text-yellow-400 mt-1 mr-4" size={20} />
@@ -90,14 +110,12 @@ export default function ContactSection() {
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Right side: Contact Form */}
           <div className="bg-gray-800/50 p-8 rounded-lg">
             <h3 className="text-xl font-semibold text-blue-400 mb-6">Send Me a Message</h3>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="name" className="block text-gray-300 mb-2">
-                  Name
-                </label>
+                <label htmlFor="name" className="block text-gray-300 mb-2">Name</label>
                 <input
                   type="text"
                   id="name"
@@ -108,10 +126,9 @@ export default function ContactSection() {
                              focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 />
               </div>
+
               <div>
-                <label htmlFor="email" className="block text-gray-300 mb-2">
-                  Email
-                </label>
+                <label htmlFor="email" className="block text-gray-300 mb-2">Email</label>
                 <input
                   type="email"
                   id="email"
@@ -122,10 +139,9 @@ export default function ContactSection() {
                              focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 />
               </div>
+
               <div>
-                <label htmlFor="message" className="block text-gray-300 mb-2">
-                  Message
-                </label>
+                <label htmlFor="message" className="block text-gray-300 mb-2">Message</label>
                 <textarea
                   id="message"
                   rows="4"
@@ -136,12 +152,14 @@ export default function ContactSection() {
                              focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 ></textarea>
               </div>
+
               <button
                 type="submit"
+                disabled={loading}
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md font-medium 
-                           transition-colors w-full"
+                           transition-colors w-full disabled:opacity-50"
               >
-                Send Message
+                {loading ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>
