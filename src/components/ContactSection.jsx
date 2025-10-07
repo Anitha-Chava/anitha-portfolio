@@ -8,48 +8,46 @@ export default function ContactSection() {
     email: "",
     message: "",
   });
-
   const [loading, setLoading] = useState(false);
 
+  // Handle input change
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    emailjs
-      .send(
-        "service_lwqslb7",     // Replace with your EmailJS Service ID
-        "template_2oadth1",    // Replace with your EmailJS Template ID
+    try {
+      const response = await emailjs.send(
+        "service_lwqslb7",     // ✅ Your EmailJS Service ID
+        "template_2oadth1",    // ✅ Your EmailJS Template ID
         {
           name: formData.name,
           email: formData.email,
           message: formData.message,
         },
-        "qppCCN0JMO27ODxBN"      // Replace with your Public Key
-      )
-      .then(
-        (response) => {
-          console.log("SUCCESS!", response.status, response.text);
-          alert("Message sent successfully!");
-          setFormData({ name: "", email: "", message: "" });
-        },
-        (error) => {
-          console.error("FAILED...", error);
-          alert("Something went wrong. Please try again.");
-        }
-      )
-      .finally(() => setLoading(false));
+        "qppCCN0JMO27ODxBN"    // ✅ Your EmailJS Public Key
+      );
+
+      if (response.status === 200) {
+        alert("✅ Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      }
+    } catch (error) {
+      console.error("Email send failed:", error);
+      alert("❌ Failed to send message. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section id="contact" className="py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Contact
@@ -57,11 +55,14 @@ export default function ContactSection() {
           <div className="w-20 h-1 bg-blue-500 mx-auto rounded-full"></div>
         </div>
 
+        {/* Grid layout */}
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Left side: Contact Info */}
+          {/* Left: Contact Info */}
           <div className="space-y-8">
             <h3 className="text-xl font-semibold text-blue-400">Get In Touch</h3>
+
             <div className="space-y-6">
+              {/* Email */}
               <div className="flex items-start">
                 <Mail className="text-yellow-400 mt-1 mr-4" size={20} />
                 <div>
@@ -70,6 +71,7 @@ export default function ContactSection() {
                 </div>
               </div>
 
+              {/* Phone */}
               <div className="flex items-start">
                 <Phone className="text-yellow-400 mt-1 mr-4" size={20} />
                 <div>
@@ -78,6 +80,7 @@ export default function ContactSection() {
                 </div>
               </div>
 
+              {/* Location */}
               <div className="flex items-start">
                 <MapPin className="text-yellow-400 mt-1 mr-4" size={20} />
                 <div>
@@ -87,6 +90,7 @@ export default function ContactSection() {
               </div>
             </div>
 
+            {/* Social Links */}
             <div className="pt-4">
               <h4 className="text-gray-200 font-medium mb-4">Connect with me</h4>
               <div className="flex space-x-4">
@@ -110,54 +114,70 @@ export default function ContactSection() {
             </div>
           </div>
 
-          {/* Right side: Contact Form */}
-          <div className="bg-gray-800/50 p-8 rounded-lg">
-            <h3 className="text-xl font-semibold text-blue-400 mb-6">Send Me a Message</h3>
-            <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Right: Contact Form */}
+          <div className="bg-gray-800/50 p-8 rounded-lg shadow-lg border border-gray-700">
+            <h3 className="text-xl font-semibold text-blue-400 mb-6">
+              Send Me a Message
+            </h3>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Name */}
               <div>
-                <label htmlFor="name" className="block text-gray-300 mb-2">Name</label>
+                <label htmlFor="name" className="block text-gray-300 mb-2">
+                  Name
+                </label>
                 <input
                   type="text"
                   id="name"
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md
                              focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 />
               </div>
 
+              {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-gray-300 mb-2">Email</label>
+                <label htmlFor="email" className="block text-gray-300 mb-2">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md
                              focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 />
               </div>
 
+              {/* Message */}
               <div>
-                <label htmlFor="message" className="block text-gray-300 mb-2">Message</label>
+                <label htmlFor="message" className="block text-gray-300 mb-2">
+                  Message
+                </label>
                 <textarea
                   id="message"
                   rows="4"
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md
                              focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 ></textarea>
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md font-medium 
-                           transition-colors w-full disabled:opacity-50"
+                className={`px-6 py-3 rounded-md font-medium w-full transition-colors ${
+                  loading
+                    ? "bg-blue-500 opacity-70 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
               >
                 {loading ? "Sending..." : "Send Message"}
               </button>
