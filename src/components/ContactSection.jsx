@@ -25,7 +25,7 @@ export default function ContactSection() {
     emailjs
       .send(
         "service_lwqslb7",     // Replace with your EmailJS Service ID
-        "template_iwpmzq3",    // Replace with your EmailJS Template ID
+        "template_2oadth1",    // Replace with your EmailJS Template ID
         {
           name: formData.name,
           email: formData.email,
