@@ -1,6 +1,31 @@
-import { Mail, Phone, MapPin, Linkedin, Github } from 'lucide-react';
+import { useState } from "react";
+import { Mail, Phone, MapPin, Linkedin, Github } from "lucide-react";
 
 export default function ContactSection() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Here you can replace this with an actual API call or EmailJS integration
+    console.log("Form submitted:", formData);
+    alert(`Thank you ${formData.name}, your message has been sent!`);
+
+    // Clear form after submission
+    setFormData({ name: "", email: "", message: "" });
+  };
+
   return (
     <section id="contact" className="py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -12,9 +37,10 @@ export default function ContactSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
+          {/* Contact Info */}
           <div className="space-y-8">
             <h3 className="text-xl font-semibold text-blue-400">Get In Touch</h3>
-            
+
             <div className="space-y-6">
               <div className="flex items-start">
                 <Mail className="text-yellow-400 mt-1 mr-4" size={20} />
@@ -23,7 +49,7 @@ export default function ContactSection() {
                   <p className="text-gray-400">anithachava4407@gmail.com</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <Phone className="text-yellow-400 mt-1 mr-4" size={20} />
                 <div>
@@ -31,7 +57,7 @@ export default function ContactSection() {
                   <p className="text-gray-400">+91 8121463159</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start">
                 <MapPin className="text-yellow-400 mt-1 mr-4" size={20} />
                 <div>
@@ -44,15 +70,15 @@ export default function ContactSection() {
             <div className="pt-4">
               <h4 className="text-gray-200 font-medium mb-4">Connect with me</h4>
               <div className="flex space-x-4">
-                <a 
-                  href="https://linkedin.com/in/anitha-chava" 
+                <a
+                  href="https://linkedin.com/in/anitha-chava"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
                 >
                   <Linkedin size={24} />
                 </a>
-                <a 
+                <a
                   href="https://github.com/Anitha-Chava"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -64,36 +90,56 @@ export default function ContactSection() {
             </div>
           </div>
 
+          {/* Contact Form */}
           <div className="bg-gray-800/50 p-8 rounded-lg">
             <h3 className="text-xl font-semibold text-blue-400 mb-6">Send Me a Message</h3>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="name" className="block text-gray-300 mb-2">Name</label>
-                <input 
-                  type="text" 
-                  id="name" 
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                <label htmlFor="name" className="block text-gray-300 mb-2">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                             focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-gray-300 mb-2">Email</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                <label htmlFor="email" className="block text-gray-300 mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                             focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-gray-300 mb-2">Message</label>
-                <textarea 
-                  id="message" 
+                <label htmlFor="message" className="block text-gray-300 mb-2">
+                  Message
+                </label>
+                <textarea
+                  id="message"
                   rows="4"
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md 
+                             focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 ></textarea>
               </div>
-              <button 
+              <button
                 type="submit"
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md font-medium transition-colors w-full"
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md font-medium 
+                           transition-colors w-full"
               >
                 Send Message
               </button>
